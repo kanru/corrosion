@@ -293,6 +293,7 @@ jobs:
   # Hence, we have some kind of dummy here that bors can listen on
   ci-success:
     name: bors-ci-status
+    if: ${{ success() }}
     needs:
       - test_legacy_linux
       - test_legacy_mac
@@ -305,3 +306,20 @@ jobs:
     steps:
       - name: CI succeeded
         run: exit 0
+        if: ${{ success() }}
+  ci-failure:
+    name: bors-ci-status
+    if: ${{ failure() }}
+    needs:
+      - test_legacy_linux
+      - test_legacy_mac
+      - test_legacy_windows
+      - test
+      - test_msvc
+      - test_cxxbridge
+      - install
+    runs-on: ubuntu-latest
+    steps:
+      - name: CI failed
+        run: exit 1
+        if: ${{ failure() }}
